@@ -17,7 +17,6 @@ exports.up = (pgm) => {
     sensor: {
       type: 'VARCHAR(50)',
       notNull: true,
-      references: '"controllers"("id")',
     },
     state: {
       type: 'BOOLEAN',

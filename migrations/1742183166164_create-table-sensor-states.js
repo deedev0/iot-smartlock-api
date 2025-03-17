@@ -17,6 +17,8 @@ exports.up = (pgm) => {
     sensor: {
       type: 'VARCHAR(50)',
       notNull: true,
+      references: '"sensors"("id")',
+      onDelete: 'CASCADE',
     },
     state: {
       type: 'BOOLEAN',
