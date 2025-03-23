@@ -9,10 +9,10 @@ class ControllersService {
     this._pool = new Pool();
   }
 
-  async getControllerById(userId) {
+  async getControllerById(controllerId) {
     const query = {
-      text: 'SELECT * FROM controllers WHERE owner = $1',
-      values: [userId],
+      text: 'SELECT * FROM controllers WHERE id = $1',
+      values: [controllerId],
     };
 
     const result = await this._pool.query(query);
@@ -41,7 +41,7 @@ class ControllersService {
     return result.rows[0].id;
   }
 
-  async deleteController(id, owner) {
+  async deleteControllerById(id, owner) {
     await this.verifyControllerOwner(id, owner);
     
     const query = {
@@ -52,7 +52,7 @@ class ControllersService {
     await this._pool.query(query);
   }
 
-  async editController(owner, { id, name }) {
+  async editControllerById(owner, { id, name }) {
     await this.verifyControllerOwner(id, owner);
 
     const query = {

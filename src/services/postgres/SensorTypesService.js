@@ -8,6 +8,17 @@ class SensorTypesService {
     this._pool = new Pool();
   }
 
+  async getSensorTypes() {
+    const query = {
+      text: 'SELECT * FROM sensor_types',
+      values: [],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
+  }
+
   async addSensorType(type, name) {
     const id = `type-${nanoid(16)}`;
 
@@ -36,7 +47,7 @@ class SensorTypesService {
 
   async editSensorType({ id, name, type }) {
     const query = {
-      text: 'UPDATE sensor_types SET type = $1, name = $2 WHERE id = $3',
+      text: 'UPDATE sensor_types SET type = $1, name = $2 WHERE id = $3 RETURNING id',
       values: [type, name, id],
     };
 

@@ -8,17 +8,25 @@ const routes = (handler) => [
     },
   },
   {
+    method: 'GET',
+    path: '/controllers/{id}',
+    handler: handler.getControllerByIdHandler,
+    options: {
+      auth: 'auth_jwt',
+    },
+  },
+  {
     method: 'PUT',
-    path: '/controllers',
-    handler: handler.putControllerHandler,
+    path: '/controllers/{id}',
+    handler: handler.putControllerByIdHandler,
     options: {
       auth: 'auth_jwt',
     },
   },
   {
     method: 'DELETE',
-    path: '/controllers',
-    handler: handler.deleteControllerHandler,
+    path: '/controllers/{id}',
+    handler: handler.deleteControllerByIdHandler,
     options: {
       auth: 'auth_jwt',
     },

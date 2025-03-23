@@ -6,11 +6,6 @@ const PostSensorTypeSchema = Joi.object({
 });
 
 const PutSensorTypeSchema = Joi.object({
-  refreshToken: Joi.string().required(),
-});
-
-const DeleteSensorTypeSchema = Joi.object({
-  sensorId: Joi.string().required(),
   type: Joi.string().required(),
   name: Joi.string().required(),
 });
@@ -18,5 +13,4 @@ const DeleteSensorTypeSchema = Joi.object({
 module.exports = {
   PostSensorTypeSchema,
   PutSensorTypeSchema,
-  DeleteSensorTypeSchema,
 };
