@@ -10,12 +10,45 @@ class SensorsService {
     this._sensorStateService = sensorStateService;
   }
 
-  async addSensor(sensorTypeId, controllerId) {
+  async getSensors(owner, contollerId) {
+
+    const query = {
+      text: 'SELECT * FROM controllers WHERE id = $1',
+      values: [contollerId],
+    };
+
+    
+    const result = await this._pool.query(query);
+    const controller = result.rows[0];
+
+    if (owner !== controller.owner) {
+      throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
+    }
+
+    const sensors = await this._pool.query('SELECT * FROM sensors WHERE controller = $1', [controller.id]);
+
+    return sensors.rows;
+  }
+
+  async getSensorById(id, owner) {
+    await this.verifySensorOwner(id, owner);
+
+    const query = {
+      text: 'SELECT * FROM sensors WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows[0];
+  }
+
+  async addSensor(name, sensorTypeId, controllerId) {
     const id = `sensors-${nanoid(16)}`;
 
     const query = {
-      text: 'INSERT INTO sensors VALUES($1, $2, $3) RETURNING id',
-      values: [id, sensorTypeId, controllerId],
+      text: 'INSERT INTO sensors VALUES($1, $2, $3, $4, $5) RETURNING id',
+      values: [id, name, sensorTypeId, controllerId, true],
     };
 
     const result = await this._pool.query(query);
@@ -31,7 +64,7 @@ class SensorsService {
     return sensorId;
   }
 
-  async deleteSensor(id, owner) {
+  async deleteSensorById(id, owner) {
     await this.verifySensorOwner(id, owner);
 
     const query = {
@@ -42,15 +75,16 @@ class SensorsService {
     await this._pool.query(query);
   }
 
-  async editSensor(owner, { id, sensorTypeId }) {
+  async editSensorById(owner, { id, name, sensorTypeId, isActive = true }) {
     await this.verifySensorOwner(id, owner);
 
     const query = {
-      text: 'UPDATE sensors SET sensor_type = $1 WHERE id = $1',
-      values: [sensorTypeId, id],
+      text: 'UPDATE sensors SET name = $1, sensor_type = $2, is_active = $3 WHERE id = $4',
+      values: [name, sensorTypeId, isActive, id],
     };
 
-    await this._pool.query(query);
+    const result = await this._pool.query(query);
+    console.log(result);
   }
 
   async verifySensorOwner(id, owner) {

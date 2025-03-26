@@ -13,14 +13,14 @@ class ControllersHandler {
     this._validator.validateControllerPayload(request.payload);
     const { name } = request.payload;
     const { id: owner } = request.auth.credentials;
-    const sensorId = await this._service.addController(owner, name);
+    const ControllerId = await this._service.addController(owner, name);
 
 
     const response = h.response({
       status: 'success',
-      message: 'Album berhasil ditambahkan',
+      message: 'Controller berhasil ditambahkan',
       data: {
-        sensorId,
+        ControllerId,
       },
     });
     response.code(201);

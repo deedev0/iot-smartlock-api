@@ -28,11 +28,24 @@ const sensorTypes = require('./api/sensorTypes');
 const SensorTypesService = require('./services/postgres/SensorTypesService');
 const SensorTypesValidator = require('./validator/sensorTypes');
 
+// sensors
+const sensors = require('./api/sensors');
+const SensorsService = require('./services/postgres/SensorsService');
+const SensorsValidator = require('./validator/sensors');
+
+// states-service
+const SensorStatesService = require('./services/postgres/SensorStatesService');
+
+// logs
+const LogsService = require('./services/postgres/LogsService');
+
 const init = async () => {
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const controllersService = new ControllersService();
   const sensorTypesService = new SensorTypesService();
+  const sensorStatesService = new SensorStatesService(new SensorsService(), new LogsService());
+  const sensorsService = new SensorsService(sensorStatesService);
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -92,15 +105,22 @@ const init = async () => {
       options: {
         service: controllersService,
         validator: ControllersValidator,
-      }
+      },
     },
     {
       plugin: sensorTypes,
       options: {
         service: sensorTypesService,
         validator: SensorTypesValidator,
-      }
+      },
     },
+    {
+      plugin: sensors,
+      options: {
+        service: sensorsService,
+        validator: SensorsValidator,
+      },
+    }
   ]);
 
   server.ext('onPreResponse', (request, h) => {

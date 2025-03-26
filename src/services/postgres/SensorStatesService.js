@@ -14,7 +14,7 @@ class SensorStatesService {
     const id = `state-${nanoid(16)}`;
 
     const query = {
-      text: 'INSERT INTO sensor_states VALUES($1, $2, $3)',
+      text: 'INSERT INTO sensor_states VALUES($1, $2, $3) RETURNING id',
       values: [id, sensor, false],
     };
 

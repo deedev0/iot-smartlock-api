@@ -13,6 +13,10 @@ exports.up = (pgm) => {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
+    },    
+    name: {
+      type: 'VARCHAR(50)',
+      notNull: true,
     },
     sensor_type: {
       type: 'VARCHAR(50)',
